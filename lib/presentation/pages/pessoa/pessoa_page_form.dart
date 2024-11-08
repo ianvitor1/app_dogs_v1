@@ -22,6 +22,29 @@ class _PessoaPageFormState extends State<PessoaPageForm> {
   final _enderecoEstadoController = TextEditingController();
   final PessoaViewmodel _viewModel = PessoaViewmodel(PessoaRepository());
 
+  _buscarEndereco(String cep) async {
+    if (cep.length != 8) return;
+
+    try {
+      final response = 
+      await http.get(Uri.parse('https:\\viacep.com.br/ws/$cep/json/'));
+
+      if (!mounted) return;
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        if (data.containsKey('erro') {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(context: Text('CEP não encontrado!')),
+            )
+          }
+        })
+      }
+    }
+  } 
+
   Future<void> savePessoa() async {
     if (_formKey.currentState!.validate()) {
       final pessoa = Pessoa(
